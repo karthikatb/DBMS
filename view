@@ -1,0 +1,60 @@
+create table BANK_49(bankcode VARCHAR(3) PRIMARY KEY,
+    bankname VARCHAR(50) NOT NULL,
+    headoffice VARCHAR(50),
+    branches INT CHECK (branches > 0)
+);
+INSERT INTO BANK_49 VALUES ('SBI', 'State Bank of India', 'Mumbai', 22000);
+INSERT INTO BANK_49 VALUES ('HDF', 'HDFC Bank', 'Ernakulam', 6000);
+INSERT INTO BANK_49 VALUES ('ICI', 'ICICI Bank', 'Ernakulam', 5000);
+  INSERT INTO BANK_49 VALUES ('PNB', 'Punjab National Bank', 'New Delhi', 10000);
+INSERT INTO BANK_49 VALUES ('CAN', 'Canara Bank', 'Bangalore', 9000);
+
+
+CREATE TABLE BRANCH (
+    branchid INT PRIMARY KEY,
+    branchname VARCHAR(50) DEFAULT 'New Delhi',
+    bankid VARCHAR(3),
+    FOREIGN KEY (bankid) REFERENCES BANK_49(bankcode)
+);
+
+INSERT INTO BRANCH VALUES (1, 'Kochi', 'SBI');
+INSERT INTO BRANCH VALUES (2, 'Ernakulam', 'HDF');
+INSERT INTO BRANCH VALUES (3, 'Chennai', 'ICI');
+INSERT INTO BRANCH VALUES (4, 'Delhi', 'PNB');
+INSERT INTO BRANCH VALUES (5, 'Bangalore', 'CAN');
+INSERT INTO BRANCH (branchid, bankid) VALUES (6, 'SBI');
+
+UPDATE BRANCH
+SET branchname = 'Kottayam'
+WHERE branchname = 'Chennai';
+
+UPDATE BRANCH
+SET branchname = 'Kottayam'
+WHERE branchname = 'Delhi';
+
+
+drop table BANK_49;
+DROP TABLE BRANCH;
+
+CREATE VIEW bank_head_office AS
+SELECT *
+FROM BANK_49
+WHERE headoffice = 'Ernakulam';
+select * from bank_head_office;
+DROP VIEW bank_branch;
+SELECT * FROM BANK_49;
+SELECT * FROM bank_outside_ernakulam;
+
+CREATE VIEW bank_branch AS
+SELECT B.*
+FROM BANK_49 B
+JOIN BRANCH BR ON B.bankcode = BR.bankid
+WHERE BR.branchname = 'Kottayam';
+select * from bank_branch;
+
+CREATE VIEW bank_more_than_50 AS SELECT * FROM BANK_49 WHERE branches>50;
+
+
+CREATE VIEW bank_branch_details AS SELECT b.bankname, br.branchname FROM BANK_49 b JOIN Branch br ON b.bankcode=br.bankid;
+
+CREATE VIEW bank_outside_ernakulam AS SELECT * FROM BANK_49 WHERE headoffice<>'Ernakulam';
